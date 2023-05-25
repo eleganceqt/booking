@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +21,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/rooms', fn() => view('rooms'));
+
+Route::get('/rooms/search', [RoomController::class, 'index']);
+Route::post('/reservations/{room}', [ReservationController::class, 'store']);
+
+Route::prefix('/admin')->group(function () {
+    Route::get('/reservations', fn() => view('admin.reservations'));
+    Route::get('/reservations/search', [AdminReservationController::class, 'search']);
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -28,4 +41,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
